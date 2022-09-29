@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build-ubuntu-20:
+    name: Build on Ubuntu 20.04
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      with:
+        repository: wireshark/wireshark
+        ref: v3.2.3
+        path: wireshark
+    - name: Install Dependencies
+      run: |
+        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+        sudo apt-get update
+        sudo apt-get build-dep wireshark
+    - name: Prepare Wireshark Source Tree
+      run: cmake -S wireshark -B wireshark/build
+    - name: Build Matter Dissector
+      run: WIRESHARK_SRC_DIR=wireshark make
+    - uses: actions/upload-artifact@v3
+      with:
+        name: matter-dissector-ubuntu-20.04
+        path: matter-dissector.so
+
+  build-ubuntu-22:
+    name: Build on Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      with:
+        repository: wireshark/wireshark
+        ref: v3.6.2
+        path: wireshark
+    - name: Install Dependencies
+      run: |
+        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+        sudo apt-get update
+        sudo apt-get build-dep wireshark
+    - name: Prepare Wireshark Source Tree
+      run: cmake -S wireshark -B wireshark/build
+    - name: Build Matter Dissector
+      run: WIRESHARK_SRC_DIR=wireshark make
+    - uses: actions/upload-artifact@v3
+      with:
+        name: matter-dissector-ubuntu-22.04
+        path: matter-dissector.so

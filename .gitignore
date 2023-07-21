@@ -1,0 +1,14 @@
+*.a
+*.d
+*.la
+*.lo
+*.so
+*.o
+*.pyc
+*~
+plugin.c
+*.map
+.cproject
+.project
+.settings/
+old/
